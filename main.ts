@@ -24,8 +24,11 @@ function main(): void {
   const here = dirname(fileURLToPath(import.meta.url));
   const raw = readFileSync(join(here, "BOUNTY.json"), "utf8");
   const data = JSON.parse(raw) as BountyFile;
+  if (data.bounties.length === 0) {
+    throw new Error("BOUNTY.json names no bounties");
+  }
   const slugs = data.bounties.map(slugOf);
-  const line = `Sponsored by @kreutzx for bounty-entrants-03: ${slugs.join(", ")}`;
+  const line = `Sponsored by @kreutzx for bounty-entrants-03 (${slugs.length} bounties): ${slugs.join(", ")}`;
   const outDir = process.env.OUTPUT_DIR ?? "/output";
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, "entry.txt"), line + "\n", "utf8");
